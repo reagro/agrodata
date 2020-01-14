@@ -38,7 +38,7 @@ data_crop <- function(name, path) {
 		if (missing(path)) {
 			stop("provide a path (where the data should be stored)")
 		}
-		ff <- .get_zip(path, "https://gfc.ucdavis.edu/events/agrin/data/sentinel.zip", "5ded28dab9d73bccd6ea83379f730e66", "^S1A.*_Clip.tif$", 29)
+		ff <- .get_zip(path, "https://gfc.ucdavis.edu/events/agrin/data/sentinel.zip", "d4d285303e8f1fefe48867b2b10796c7", "^S1A.*_Clip.tif$", 29)	
 		return(ff)
 		
 	} else {

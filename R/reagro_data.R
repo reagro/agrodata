@@ -93,7 +93,7 @@
 				return(ff)
 			}
 		}
-	}
+	} 
 	tmpfile <- tempfile()
 	download.file(url, tmpfile, mode="wb")
 	if (tools::md5sum(tmpfile) == md5) {
@@ -129,21 +129,4 @@ reagro_data <- function(name) {
 	return(r)
 }	
 
-
-
-.download_data <- function(name, path) {
-	name <- tolower(name)
-	if (name %in% c("xxxcrop_ref")) {
-		.get_shp(name, "crop")	
-	} else if (name == "sentinel1") {
-		if (missing(path)) {
-			stop("provide a path (where the data should be stored)")
-		}
-		ff <- .get_zip(path, "https://gfc.ucdavis.edu/events/reagro/data/sentinel1.zip", "5ded28dab9d73bccd6ea83379f730e66", "^S1A.*_Clip.tif$", 29)
-		return(ff)
-		
-	} else {
-		.get_data(name, "crop")
-	}
-}
 
