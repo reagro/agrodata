@@ -59,7 +59,7 @@
 
 .get_data <- function(name, path, ext=".rds") {
 	name <- .setExtension(name, ext)
-	fn <- system.file(file.path(path, name), package="reagro")
+	fn <- system.file(file.path(path, name), package="reagrodata")
 	if (!(file.exists(fn))) {
 		stop(paste(name, "is not a valid data set name"))
 	}
@@ -72,7 +72,7 @@
 
 .get_shp <- function(name, path) {
 	name <- .setExtension(name, ".shp")
-	fn <- system.file(file.path(path, name), package="reagro")
+	fn <- system.file(file.path(path, name), package="reagrodata")
 	if (!(file.exists(fn))) {
 		stop(paste(name, "is not a valid data set name"))
 	}
@@ -109,7 +109,7 @@
 
 
 reagro_data <- function(name) {
-	ff <- list.files(system.file("dat", package="reagro"), full.names=TRUE)
+	ff <- list.files(system.file("dat", package="reagrodata"), full.names=TRUE)
 	bf <- basename(ff)
 	i <- match(tolower(name), .extension(tolower(bf), ""))
 	if (length(i) > 0) {
