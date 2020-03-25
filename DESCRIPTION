@@ -1,8 +1,8 @@
 Package: agrodata
 Type: Package
 Title: Regional Agronomy Data
-Version: 0.1-1
-Date: 2020-01-14
+Version: 0.1-2
+Date: 2020-03-25
 Author: Authors
 Depends: terra, R (>= 3.5.0)
 Maintainer: <r.hijmans@gmail.com>
