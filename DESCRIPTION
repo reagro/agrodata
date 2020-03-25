@@ -1,10 +1,10 @@
-Package: reagrodata
+Package: agrodata
 Type: Package
 Title: Regional Agronomy Data
-Version: 0.1
-Date: 2019-08-08
+Version: 0.1-1
+Date: 2020-01-14
 Author: Authors
-Depends: terra
+Depends: terra, R (>= 3.5.0)
 Maintainer: <r.hijmans@gmail.com>
 Description: Data for the examples on the Regional Agronomy website.
 License: GPL (>=3)
