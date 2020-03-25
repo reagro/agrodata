@@ -22,9 +22,4 @@ crop_calendar_sacks <- function(crop="", folder=".") {
 	}
 }
 
-library(terra)
-r = crop_calendar_sacks("Maize (main season)")
-names(r)
-rast('NETCDF:"./Maize.crop.calendar.nc":harvest')
-
 
