@@ -40,6 +40,9 @@ crop_spam <- function(crop="", var="area", folder=".") {
 	n <- substr(n, nchar(n[1]), nchar(n[1]))
 	i <- match(n, nicenms[,1])
 	names(x) <- nicenms[,2]
+	
+	terra::ext(x) <- c(-180, 180, -90, 90)
 	x
 }
+
 
