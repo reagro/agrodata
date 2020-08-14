@@ -16,7 +16,7 @@ crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 	crop <- tolower(trimws(crop))
 	crops <- spamCrops()
 	if (!(crop %in% crops)) { stop("crop not know to SPAM; see spamCrops()") }
-	i <- which(crop == crops)[1]
+	i <- which(crop == crops[,1])[1]
 	crop <- toupper(crops[i,2])
 	if (africa) {
 		urlbase <- "https://s3.amazonaws.com/mapspam/2017/ssa/v1.1/geotiff/"	
@@ -28,8 +28,12 @@ crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 	} else {
 		url <- paste0(urlbase, "spam2010v1r1_global_yield.geotiff.zip")
 	}
+
+	pre <- "spam2010v1r1_global_"
 	if (africa) {
-		url <- gsub("spam2010v1r1_global", "spam2017v1r1_ssa", url)
+		afpre <- "spam2017v1r1_ssa_"
+		url <- gsub(pre, afpre, url)
+		pre <- afpre
 	}
 	zipf <- file.path(folder, basename(url))
 	if (!file.exists(zipf)) {
@@ -37,21 +41,24 @@ crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 	}
 	ff <- unzip(zipf, list=TRUE)
 	fs <- grep(crop, ff$Name, value=TRUE)
-	unzip(zipf, files=fs, junkpaths=TRUE, exdir=folder)
 	ffs <- file.path(folder, fs)
+	if (all(!file.exists(ffs))) {
+		unzip(zipf, files=fs, junkpaths=TRUE, exdir=folder)
+	}
 	x <- terra::rast(ffs)
 
-	nicenms <- c("A", "all", "I", "irrigated", "H", "rainfed-highinput", "L", "rainfed-lowinput", "S", "rainfed-subsistence", "R", "rainfed")
-	nicenms <- matrix(nicenms, ncol=2, byrow=TRUE)
-	nicenms <- nicenms[order(nicenms[,1]), ]
-	if (africa) {
-		nicenms <- nicenms[nicenms[,1] %in% c("A", "I", "R"), ]
-	}
+	#nicenms <- c("A", "all", "I", "irrigated", "H", "rainfed-highinput", "L", "rainfed-lowinput", "S", "rainfed-subsistence", "R", "rainfed")
+	#nicenms <- matrix(nicenms, ncol=2, byrow=TRUE)
+	#nicenms <- nicenms[order(nicenms[,1]), ]
+	#if (africa) {
+	#	nicenms <- nicenms[nicenms[,1] %in% c("A", "I", "R"), ]
+	#}
 
-	n <- sort(names(x))
-	n <- substr(n, nchar(n[1]), nchar(n[1]))
-	i <- match(n, nicenms[,1])
-	names(x) <- nicenms[,2]
+	#n <- sort(names(x))
+	#n <- substr(n, nchar(n[1]), nchar(n[1]))
+	#i <- match(n, nicenms[,1])
+	names(x) <- gsub(pre, "", names(x), ignore.case=TRUE)
+	names(x) <- gsub("gr_", "", names(x), ignore.case=TRUE)
 	
 	terra::ext(x) <- c(-180, 180, -90, 90)
 	if (africa) {
