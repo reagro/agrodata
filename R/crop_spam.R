@@ -8,7 +8,9 @@ spamCrops <- function() {
 
 
 
-crop_spam <- function(crop="", var="area", folder=".") {
+
+
+crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 	stopifnot(var %in% c("area", "yield"))
 	stopifnot(dir.exists(folder))
 	crop <- tolower(trimws(crop))
@@ -16,11 +18,18 @@ crop_spam <- function(crop="", var="area", folder=".") {
 	if (!(crop %in% crops)) { stop("crop not know to SPAM; see spamCrops()") }
 	i <- which(crop == crops)[1]
 	crop <- toupper(crops[i,2])
-	urlbase <- "https://s3.amazonaws.com/mapspam/2010/v1.1/geotiff/"
+	if (africa) {
+		urlbase <- "https://s3.amazonaws.com/mapspam/2017/ssa/v1.1/geotiff/"	
+	} else {
+		urlbase <- "https://s3.amazonaws.com/mapspam/2010/v1.1/geotiff/"
+	}
 	if (var == "area") {
 		url <- paste0(urlbase, "spam2010v1r1_global_harv_area.geotiff.zip")
 	} else {
 		url <- paste0(urlbase, "spam2010v1r1_global_yield.geotiff.zip")
+	}
+	if (africa) {
+		url <- gsub("spam2010v1r1_global", "spam2017v1r1_ssa", url)
 	}
 	zipf <- file.path(folder, basename(url))
 	if (!file.exists(zipf)) {
@@ -35,6 +44,9 @@ crop_spam <- function(crop="", var="area", folder=".") {
 	nicenms <- c("A", "all", "I", "irrigated", "H", "rainfed-highinput", "L", "rainfed-lowinput", "S", "rainfed-subsistence", "R", "rainfed")
 	nicenms <- matrix(nicenms, ncol=2, byrow=TRUE)
 	nicenms <- nicenms[order(nicenms[,1]), ]
+	if (africa) {
+		nicenms <- nicenms[nicenms[,1] %in% c("A", "I", "R"), ]
+	}
 
 	n <- sort(names(x))
 	n <- substr(n, nchar(n[1]), nchar(n[1]))
@@ -42,6 +54,12 @@ crop_spam <- function(crop="", var="area", folder=".") {
 	names(x) <- nicenms[,2]
 	
 	terra::ext(x) <- c(-180, 180, -90, 90)
+	if (africa) {
+		x <- crop(x, ext(-26, 58, -35, 26))
+	}
+	if (var=="yield") {
+		x <- classify(x, cbind(0, NA))
+	}
 	x
 }
 
