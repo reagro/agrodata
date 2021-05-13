@@ -7,17 +7,15 @@ spamCrops <- function() {
 
 
 
-
-
-
 crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 	stopifnot(var %in% c("area", "yield"))
 	stopifnot(dir.exists(folder))
-	crop <- tolower(trimws(crop))
+	crp <- tolower(trimws(crop))
 	crops <- spamCrops()
-	if (!(crop %in% crops)) { stop("crop not know to SPAM; see spamCrops()") }
-	i <- which(crop == crops[,1])[1]
-	crop <- toupper(crops[i,2])
+	if (!(crp %in% crops)) { stop("crop not know to SPAM; see spamCrops()") }
+	i <- which(crp == crops)[1]
+	if (i > nrow(crops)) i = i - nrow(crops)
+	crp <- toupper(crops[i,2])
 	if (africa) {
 		urlbase <- "https://s3.amazonaws.com/mapspam/2017/ssa/v1.1/geotiff/"	
 	} else {
@@ -40,7 +38,7 @@ crop_spam <- function(crop="", var="area", folder=".", africa=FALSE) {
 		download.file(url, zipf, mode="wb")
 	}
 	ff <- unzip(zipf, list=TRUE)
-	fs <- grep(crop, ff$Name, value=TRUE)
+	fs <- grep(crp, ff$Name, value=TRUE)
 	ffs <- file.path(folder, fs)
 	if (all(!file.exists(ffs))) {
 		unzip(zipf, files=fs, junkpaths=TRUE, exdir=folder)
