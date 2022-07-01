@@ -79,7 +79,7 @@
 	terra::vect(fn)
 }
 
-.get_zip <- function(datadir, url, md5, pattern, nfiles) {
+.get_zip <- function(datadir, url, md5, pattern, nfiles, quiet=FALSE, mode="wb",  ...) {
 	dir.create(datadir, recursive=TRUE, showWarnings=FALSE)
 	f <- file.path(datadir, basename(url))
 	if (file.exists(f)) {
@@ -95,7 +95,7 @@
 		}
 	} 
 	tmpfile <- tempfile()
-	download.file(url, tmpfile, mode="wb")
+	download.file(url, tmpfile, quiet=quiet, mode=mode, ...)
 	if (tools::md5sum(tmpfile) == md5) {
 		file.copy(tmpfile, f)
 		unzip(f, junkpaths=TRUE, exdir=datadir)
